@@ -33,6 +33,8 @@ int t = 3;
 int PIN_5 = 5;
 int PIN_6 = 6;
 int PIN_7 = 7;
+int Time = 1000 , Add = 500;
+float StartTime;
 
 struct can_frame canMsg;
 MCP2515 mcp2515(10);
@@ -48,6 +50,8 @@ void setup(){
   mcp2515.setNormalMode();
   pinMode(PIN_5, OUTPUT);
   digitalWrite(PIN_5, HIGH);
+  pinMode(PIN_6, OUTPUT);
+  digitalWrite(PIN_6, HIGH);
 }
 
 void loop(){
@@ -76,10 +80,28 @@ void loop(){
         canMsg.data[6] = 0x00;
         canMsg.data[7] = 0x00;
         mcp2515.sendMessage(&canMsg); //Sends the CAN message
+      Serial.println(" ON "); 
+    }
+    
+    if( x == 2 )
+    {
+      digitalWrite(PIN_6, LOW);
+  
+        canMsg.can_id = 0x036; //CAN id as 0x036 this ucontroler ID
+        canMsg.can_dlc = 8; //CAN data length as 8
+        canMsg.data[0] = 2; //Update humidity value in [0]
+        canMsg.data[1] = 0x00; //Update temperature value in [1]
+        canMsg.data[2] = 0x00; //Rest all with 0
+        canMsg.data[3] = 0x00;
+        canMsg.data[4] = 0x00;
+        canMsg.data[5] = 0x00;
+        canMsg.data[6] = 0x00;
+        canMsg.data[7] = 0x00;
+        mcp2515.sendMessage(&canMsg); //Sends the CAN message
         
       Serial.println(" ON ");
-      delay(1000);
-      digitalWrite(PIN_5, HIGH);  
+      delay(Time);
+      digitalWrite(PIN_6, HIGH);  
       Serial.println("OFF");
     }
     if( x == 0)
@@ -97,8 +119,53 @@ void loop(){
         mcp2515.sendMessage(&canMsg); //Sends the CAN message
         
       digitalWrite(PIN_5, HIGH);
+      digitalWrite(PIN_6, HIGH);
       Serial.println("OFF");
     } 
+    if( x == 5)
+    {
+        Time = Time + Add;
+        StartTime = Time/1000;
+        canMsg.can_id = 0x036; //CAN id as 0x036 this ucontroler ID
+        canMsg.can_dlc = 8; //CAN data length as 8
+        canMsg.data[0] = Time; //Update humidity value in [0]
+        canMsg.data[1] = 0x00; //Update temperature value in [1]
+        canMsg.data[2] = 0x00; //Rest all with 0
+        canMsg.data[3] = 0x00;
+        canMsg.data[4] = 0x00;
+        canMsg.data[5] = 0x00;
+        canMsg.data[6] = 0x00;
+        canMsg.data[7] = 0x00;
+        mcp2515.sendMessage(&canMsg); //Sends the CAN message
+        
+      digitalWrite(PIN_5, HIGH);
+      digitalWrite(PIN_6, HIGH);
+      Serial.println("OFF");
+      Serial.println(Time);
+      Serial.println(StartTime);
+    }
+    if( x == 6)
+    {
+        Time = Time - Add;
+        StartTime = Time/1000;
+        canMsg.can_id = 0x036; //CAN id as 0x036 this ucontroler ID
+        canMsg.can_dlc = 8; //CAN data length as 8
+        canMsg.data[0] = Time; //Update humidity value in [0]
+        canMsg.data[1] = 0x00; //Update temperature value in [1]
+        canMsg.data[2] = 0x00; //Rest all with 0
+        canMsg.data[3] = 0x00;
+        canMsg.data[4] = 0x00;
+        canMsg.data[5] = 0x00;
+        canMsg.data[6] = 0x00;
+        canMsg.data[7] = 0x00;
+        mcp2515.sendMessage(&canMsg); //Sends the CAN message
+        
+      digitalWrite(PIN_5, HIGH);
+      digitalWrite(PIN_6, HIGH);
+      Serial.println("OFF");
+      Serial.println(Time);
+      Serial.println(StartTime);
+    }
    }
   //digitalWrite(led, HIGH);
   delay(100);

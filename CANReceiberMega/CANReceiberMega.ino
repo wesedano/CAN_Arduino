@@ -43,7 +43,7 @@ void loop(){
   {
     //Serial.println(Command);
     //digitalWrite(led, LOW);
-    Serial.println("Send ON");
+    Serial.println("Send: RUN");
     //delay(1000);
     //digitalWrite(led, HIGH);
     //Serial.println("Send OFF");
@@ -62,6 +62,31 @@ void loop(){
     canMsg.data[7] = 0x00;
     mcp2515.sendMessage(&canMsg); //Sends the CAN message
   }
+  
+  if(Command == '2')//sending ON command
+  {
+    //Serial.println(Command);
+    //digitalWrite(led, LOW);
+    Serial.println("Send START");
+    //delay(1000);
+    //digitalWrite(led, HIGH);
+    //Serial.println("Send OFF");
+    //digitalWrite(led, HIGH);
+    //delay(1000);
+    //digitalWrite(led, LOW);
+    canMsg.can_id = 0x010; //CAN id as 0x036 this ucontroler ID
+    canMsg.can_dlc = 8; //CAN data length as 8
+    canMsg.data[0] = 2; //Update ON command
+    canMsg.data[1] = 0x00; //Update temperature value in [1]
+    canMsg.data[2] = 0x00; //Rest all with 0
+    canMsg.data[3] = 0x00;
+    canMsg.data[4] = 0x00;
+    canMsg.data[5] = 0x00;
+    canMsg.data[6] = 0x00;
+    canMsg.data[7] = 0x00;
+    mcp2515.sendMessage(&canMsg); //Sends the CAN message
+  }
+  
   if(Command == '0')//Sending OFF command
   {
     //Serial.println(Command);
@@ -79,13 +104,64 @@ void loop(){
     canMsg.data[7] = 0x00;
     mcp2515.sendMessage(&canMsg); //Sends the CAN message
   }
+  
+  if(Command == '+')//Sending OFF command
+  {
+    //Serial.println(Command);
+    //digitalWrite(led, HIGH);
+    Serial.println("Time : +0.5");
+    canMsg.can_id = 0x010; //CAN id as 0x036 this ucontroler ID
+    canMsg.can_dlc = 8; //CAN data length as 8
+    canMsg.data[0] = 5; //Update OFF command
+    canMsg.data[1] = 0x00; //Update temperature value in [1]
+    canMsg.data[2] = 0x00; //Rest all with 0
+    canMsg.data[3] = 0x00;
+    canMsg.data[4] = 0x00;
+    canMsg.data[5] = 0x00;
+    canMsg.data[6] = 0x00;
+    canMsg.data[7] = 0x00;
+    mcp2515.sendMessage(&canMsg); //Sends the CAN message
+  }
+  
+  if(Command == '-')//Sending OFF command
+  {
+    //Serial.println(Command);
+    //digitalWrite(led, HIGH);
+    Serial.println("Time : -0.5");
+    canMsg.can_id = 0x010; //CAN id as 0x036 this ucontroler ID
+    canMsg.can_dlc = 8; //CAN data length as 8
+    canMsg.data[0] = 6; //Update OFF command
+    canMsg.data[1] = 0x00; //Update temperature value in [1]
+    canMsg.data[2] = 0x00; //Rest all with 0
+    canMsg.data[3] = 0x00;
+    canMsg.data[4] = 0x00;
+    canMsg.data[5] = 0x00;
+    canMsg.data[6] = 0x00;
+    canMsg.data[7] = 0x00;
+    mcp2515.sendMessage(&canMsg); //Sends the CAN message
+  }
  
  //CAN Data Receibed from ID ==0x036  
  if ((mcp2515.readMessage(&canMsg) == MCP2515::ERROR_OK) && (canMsg.can_id == 0x036)){
      int x = canMsg.data[0];         
-     int y = canMsg.data[1];  
+     int y = canMsg.data[1]; 
+
      Serial.print("CAN : ");
      Serial.println(x);
+     
+     if(x == 0)
+     {
+      Serial.println("OFF");
+      }
+     if(x == 1)
+     {
+      Serial.println("RUN");
+      }
+     if(x == 2)
+     {
+      Serial.println("START");
+      }
+     
      //Serial.print(" Y: ");
      //Serial.println(y);      
    }
